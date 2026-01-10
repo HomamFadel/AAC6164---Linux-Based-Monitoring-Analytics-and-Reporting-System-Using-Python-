@@ -1,0 +1,4 @@
+Sat Jan 10 15:01:47 2026,CREATED,test.txt,"{'type': 'File', 'size': 0, 'permissions': '0o100664', 'owner': 1000, 'group': 1000, 'atime': 1768057304.6958067, 'mtime': 1768057304.6958067, 'ctime': 1768057304.6958067}"
+Sat Jan 10 15:02:22 2026,MODIFIED,test.txt,"{'type': 'File', 'size': 0, 'permissions': '0o100664', 'owner': 1000, 'group': 1000, 'atime': 1768057304.6958067, 'mtime': 1768057304.6958067, 'ctime': 1768057304.6958067}","{'type': 'File', 'size': 0, 'permissions': '0o100664', 'owner': 1000, 'group': 1000, 'atime': 1768057338.5047026, 'mtime': 1768057338.5047026, 'ctime': 1768057338.5047026}"
+Sat Jan 10 15:03:17 2026,DELETED,test.txt
+Sat Jan 10 15:08:12 2026,CREATED,Test01.txt,"{'type': 'File', 'size': 0, 'permissions': '0o100664', 'owner': 1000, 'group': 1000, 'atime': 1768057687.4680948, 'mtime': 1768057687.4680948, 'ctime': 1768057687.4680948}"
