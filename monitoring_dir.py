@@ -2,6 +2,8 @@ import time
 import csv
 from pathlib import Path
 
+
+
 MONITORED_DIR = "watched_folder"
 LOG_FILE = "directory_logs.csv"
 
