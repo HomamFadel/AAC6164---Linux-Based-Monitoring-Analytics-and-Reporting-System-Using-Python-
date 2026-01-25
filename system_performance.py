@@ -65,11 +65,8 @@ csv_file = "logs/system_metrics.csv"  # store inside logs folder
 headers = [
     "Timestamp",
     "CPU_Percent",
-    "Load_1min", "Load_5min", "Load_15min",
-    "Memory_Total", "Memory_Used", "Memory_Available", "Memory_Percent",
-    "Disk_Total", "Disk_Used", "Disk_Free", "Disk_Percent",
-    "Uptime_Seconds", "System_Idle_Percent",
-    "Total_Processes", "Running_Processes", "Sleeping_Processes"
+    "Memory_Used(GB)", "Memory_Available(GB)", "Memory_Percent",
+    "Disk_Used(GB)", "Disk_Free(GB)", "Disk_Percent"
 ]
 
 with open(csv_file, mode='w', newline='') as file:
@@ -92,31 +89,22 @@ try:
         print(f"Uptime: {metrics['uptime_seconds']/3600:.1f} hours")
         print(f"Idle % (recent): {metrics['system_idle_percent']:.1f}%")
         print(f"Processes: Total {metrics['total_processes']}, Running {metrics['running_processes']}, Sleeping {metrics['sleeping_processes']}")
+
+        with open(csv_file, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                timestamp,
+                metrics['cpu_percent'],
+                metrics['memory_used']/1024**3,   # GB
+                metrics['memory_available']/1024**3,  # GB
+                metrics['memory_percent'],
+                metrics['disk_used']/1024**3,    # GB
+                metrics['disk_free']/1024**3,    # GB
+                metrics['disk_percent']
+            ])
         
         time.sleep(10)  # Every 10 seconds
 except KeyboardInterrupt:
     print("\nMonitoring stopped.")
 
-with open(csv_file, mode='a', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow([
-        timestamp,
-        metrics['cpu_percent'],
-        metrics.get('load_1min', ''),
-        metrics.get('load_5min', ''),
-        metrics.get('load_15min', ''),
-        metrics['memory_total'],
-        metrics['memory_used'],
-        metrics['memory_available'],
-        metrics['memory_percent'],
-        metrics['disk_total'],
-        metrics['disk_used'],
-        metrics['disk_free'],
-        metrics['disk_percent'],
-        metrics['uptime_seconds'],
-        metrics['system_idle_percent'],
-        metrics['total_processes'],
-        metrics['running_processes'],
-        metrics['sleeping_processes']
-    ])
 
