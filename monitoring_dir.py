@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 MONITORED_DIR = "watched_folder"
-LOG_FILE = "directory_logs.csv"
+LOG_FILE = "logs/directory_logs.csv"
 
 previous_state = {}
 
@@ -54,6 +54,12 @@ def monitor_directory():
 
     previous_state = current_state
 
-while True:
-    monitor_directory()
-    time.sleep(5)
+def start_directory_monitoring():
+    print("Directory monitoring thread started")
+    try:
+        while True:
+            monitor_directory()
+            time.sleep(5)
+    except KeyboardInterrupt:
+        print("Your program has stopped.")
+
