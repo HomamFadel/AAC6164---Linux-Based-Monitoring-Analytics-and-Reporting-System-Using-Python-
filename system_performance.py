@@ -75,36 +75,33 @@ with open(csv_file, mode='w', newline='') as file:
 
 
 # Collect and print every 10 seconds
-print("System Performance and Resource Monitoring (every 10s)\n" + "="*60)
-try:
-    while True:
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        metrics = collect_metrics()
-        
-        print(f"\n[{timestamp}]")
-        print(f"CPU %: {metrics['cpu_percent']:.1f}%")
-        print(f"Load Average (1/5/15min): {metrics['load_1min']:.2f}, {metrics['load_5min']:.2f}, {metrics['load_15min']:.2f}")
-        print(f"Memory: Used {metrics['memory_used']/1024**3:.1f}GB ({metrics['memory_percent']:.1f}%), Avail {metrics['memory_available']/1024**3:.1f}GB")
-        print(f"Disk /: Used {metrics['disk_used']/1024**3:.1f}GB ({metrics['disk_percent']:.1f}%)")
-        print(f"Uptime: {metrics['uptime_seconds']/3600:.1f} hours")
-        print(f"Idle % (recent): {metrics['system_idle_percent']:.1f}%")
-        print(f"Processes: Total {metrics['total_processes']}, Running {metrics['running_processes']}, Sleeping {metrics['sleeping_processes']}")
+def start_system_monitoring():
+    print("System Performance and Resource Monitoring (every 10s)\n" + "="*60)
+    try:
+        while True:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            metrics = collect_metrics()
 
-        with open(csv_file, mode='a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([
-                timestamp,
-                metrics['cpu_percent'],
-                metrics['memory_used']/1024**3,   # GB
-                metrics['memory_available']/1024**3,  # GB
-                metrics['memory_percent'],
-                metrics['disk_used']/1024**3,    # GB
-                metrics['disk_free']/1024**3,    # GB
-                metrics['disk_percent']
-            ])
-        
-        time.sleep(10)  # Every 10 seconds
-except KeyboardInterrupt:
-    print("\nMonitoring stopped.")
+            print(f"\n[{timestamp}]")
+            print(f"CPU %: {metrics['cpu_percent']:.1f}%")
+            print(f"Memory Used: {metrics['memory_percent']:.1f}%")
+            print(f"Disk Used: {metrics['disk_percent']:.1f}%")
 
+            with open(csv_file, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([
+                    timestamp,
+                    metrics['cpu_percent'],
+                    metrics['memory_used']/1024**3,
+                    metrics['memory_available']/1024**3,
+                    metrics['memory_percent'],
+                    metrics['disk_used']/1024**3,
+                    metrics['disk_free']/1024**3,
+                    metrics['disk_percent']
+                ])
+
+            time.sleep(10)
+
+    except KeyboardInterrupt:
+        print("\nSystem monitoring stopped.")
 

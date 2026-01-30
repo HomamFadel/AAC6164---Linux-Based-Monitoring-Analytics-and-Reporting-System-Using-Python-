@@ -1,6 +1,6 @@
 import threading
 from monitoring_dir import start_directory_monitoring
-from monitor_system import start_system_monitoring
+from system_performance import start_system_monitoring
 
 print("Linux Monitoring System Started")
 print("=" * 40)
