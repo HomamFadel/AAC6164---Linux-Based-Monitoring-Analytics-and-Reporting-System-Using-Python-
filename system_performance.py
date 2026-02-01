@@ -75,7 +75,8 @@ with open(csv_file, mode='w', newline='') as file:
 
 
 # Collect and print every 10 seconds
-print("System Performance and Resource Monitoring (every 10s)\n" + "="*60)
+def start_system_monitoring():
+    print("System Performance and Resource Monitoring (every 10s)\n" + "="*60)
 try:
     while True:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -109,3 +110,4 @@ except KeyboardInterrupt:
 
 if __name__ == "__main__":
     start_system_monitoring()
+
