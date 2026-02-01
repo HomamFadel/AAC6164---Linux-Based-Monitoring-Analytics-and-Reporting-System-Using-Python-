@@ -107,4 +107,5 @@ try:
 except KeyboardInterrupt:
     print("\nMonitoring stopped.")
 
-
+if __name__ == "__main__":
+    start_system_monitoring()
