@@ -105,3 +105,5 @@ def start_system_monitoring():
     except KeyboardInterrupt:
         print("\nSystem monitoring stopped.")
 
+if __name__ == "__main__":
+    start_system_monitoring()
