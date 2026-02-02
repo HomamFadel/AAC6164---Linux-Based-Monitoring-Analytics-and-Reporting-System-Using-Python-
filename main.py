@@ -1,15 +1,55 @@
 import threading
+import time
+import sys
+import os
+
 from monitoring_dir import start_directory_monitoring
 from system_performance import start_system_monitoring
 
-print("Linux Monitoring System Started")
-print("=" * 40)
+# Visualization is OPTIONAL
+try:
+    import visualization
+except ImportError:
+    visualization = None
 
-directory_thread = threading.Thread(target=start_directory_monitoring)
-system_thread = threading.Thread(target=start_system_monitoring)
 
-directory_thread.start()
-system_thread.start()
+def main():
+    print("=" * 50)
+    print("LINUX MONITORING SYSTEM - GROUP PROJECT")
+    print("System Status: RUNNING")
+    print("Press Ctrl+C to stop and generate report")
+    print("=" * 50)
 
-directory_thread.join()
-system_thread.join()
+    os.makedirs("logs", exist_ok=True)
+    os.makedirs("watched_folder", exist_ok=True)
+
+    t1 = threading.Thread(target=start_directory_monitoring, daemon=True)
+    t2 = threading.Thread(target=start_system_monitoring, daemon=True)
+
+    t1.start()
+    t2.start()
+
+    try:
+        while True:
+            time.sleep(1)
+
+    except KeyboardInterrupt:
+        print("\n[STOP SIGNAL] Processing analytics for Student C...")
+
+        if visualization:
+            try:
+                dir_stats = visualization.analyze_directory_data()
+                sys_stats = visualization.analyze_system_performance()
+                visualization.generate_report(dir_stats, sys_stats)
+                print("Report created successfully.")
+            except Exception as e:
+                print(f"Analysis failed: {e}")
+        else:
+            print("Visualization module missing — skipping Student C stage.")
+
+        print("System Shutdown Complete.")
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
