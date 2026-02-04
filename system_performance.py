@@ -47,13 +47,28 @@ def collect_metrics():
     # Number running vs sleeping processes
     running = 0
     sleeping = 0
-    for proc in psutil.process_iter(['pid', 'status']):
-        if proc.info['status'] == psutil.STATUS_RUNNING:
-            running += 1
-        elif proc.info['status'] == psutil.STATUS_SLEEPING:
-            sleeping += 1
+    # List to store process info for Top 3 analysis
+    process_list = []
+    
+    for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 'memory_info']):
+        try:
+            # Count running vs sleeping
+            if proc.info['status'] == psutil.STATUS_RUNNING:
+                running += 1
+            elif proc.info['status'] == psutil.STATUS_SLEEPING:
+                sleeping += 1
+            
+            # Store info for Top 3 Sorting
+            process_list.append(proc.info)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, AttributeError):
+            continue
+
     metrics['running_processes'] = running
     metrics['sleeping_processes'] = sleeping
+
+    # Top 3 Processes by CPU and Memory
+    metrics['top_3_cpu'] = sorted(process_list, key=lambda x: x['cpu_percent'], reverse=True)[:3]
+    metrics['top_3_mem'] = sorted(process_list, key=lambda x: x['memory_info'].rss, reverse=True)[:3]
     
     return metrics
 
@@ -66,7 +81,7 @@ headers = [
     "Timestamp",
     "CPU_Percent",
     "Memory_Used(GB)", "Memory_Available(GB)", "Memory_Percent",
-    "Disk_Used(GB)", "Disk_Free(GB)", "Disk_Percent"
+    "Disk_Used(GB)", "Disk_Free(GB)", "Disk_Percent", "Top_3_CPU_Processes", "Top_3_Memory_Processes"
 ]
 
 with open(csv_file, mode='w', newline='') as file:
@@ -86,6 +101,11 @@ def start_system_monitoring():
             print(f"CPU %: {metrics['cpu_percent']:.1f}%")
             print(f"Memory Used: {metrics['memory_percent']:.1f}%")
             print(f"Disk Used: {metrics['disk_percent']:.1f}%")
+            print(f"System Uptime: {metrics['uptime_seconds']:.0f}s")
+
+            # Formatted the Top 3 data into strings for the CSV
+            top_cpu_str = ", ".join([f"{p['name']}({p['cpu_percent']}%)" for p in metrics['top_3_cpu']])
+            top_mem_str = ", ".join([f"{p['name']}({p.get('memory_info').rss/1024**2:.1f}MB)" for p in metrics['top_3_mem']])
 
             with open(csv_file, mode='a', newline='') as file:
                 writer = csv.writer(file)
@@ -97,7 +117,9 @@ def start_system_monitoring():
                     metrics['memory_percent'],
                     metrics['disk_used']/1024**3,
                     metrics['disk_free']/1024**3,
-                    metrics['disk_percent']
+                    metrics['disk_percent'],
+                    top_cpu_str,
+                    top_mem_str
                 ])
 
             time.sleep(10)
@@ -107,3 +129,4 @@ def start_system_monitoring():
 
 if __name__ == "__main__":
     start_system_monitoring()
+
